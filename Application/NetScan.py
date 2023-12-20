@@ -75,8 +75,29 @@ class NetScan:
       container.append(ip)
     return condition
   
+  def GetOpenedPorts(self, ip, range_p = 65535):
+    ports = []
+    threads = []
+    for port in range(range_p + 1):
+      # Maybe not necesary, but if an exception is raised, the socket will be closed automatically
+      thread = threading.Thread(target=self.IsPortOpen, args=(ip, port, ports))
+      threads.append(thread)
+      thread.start()
+    for thread in threads:
+      thread.join()
+    return ports
+  
+  def IsPortOpen(self, ip, port, container = None):
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s: 
+      result = s.connect_ex((ip, port))
+      if (result == 0 and container != None):
+        container.append(port)
+        s.close()
+      return result == 0
+
 a = NetScan()
-print(a.MyIP())
-print(a.GetMyHostName())
-print(a.GetInterfaces())
-print(a.ShowAvaibleIps())
+# print(a.MyIP())
+# print(a.GetMyHostName())
+# print(a.GetInterfaces())
+# print(a.ShowAvaibleIps())
+print(a.GetOpenedPorts('127.0.0.1', 1000))
