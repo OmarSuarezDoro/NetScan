@@ -94,10 +94,3 @@ class NetScan:
         container.append(port)
         s.close()
       return result == 0
-
-a = NetScan()
-# print(a.MyIP())
-# print(a.GetMyHostName())
-# print(a.GetInterfaces())
-# print(a.ShowAvaibleIps())
-print(a.GetOpenedPorts('127.0.0.1', 1000))
